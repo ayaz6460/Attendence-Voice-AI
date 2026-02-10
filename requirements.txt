@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+websockets
+twilio
+supabase
+python-dotenv
+openai-whisper
+google-generativeai
+pyngrok
+numpy
+requests

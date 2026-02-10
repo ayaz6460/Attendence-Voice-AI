@@ -4,7 +4,7 @@ import { Users, UserCheck, UserX, PhoneOutgoing, Filter, CheckCircle, Search, Lo
 import { motion, AnimatePresence } from 'framer-motion';
 
 // API Config
-const API_URL = "http://localhost:8001";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
 
 const Dashboard = () => {
     const [students, setStudents] = useState([]);

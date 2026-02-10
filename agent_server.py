@@ -5,6 +5,8 @@ import asyncio
 import subprocess
 import websockets
 import whisper
+import platform
+import shutil
 import google.generativeai as genai
 from fastapi import FastAPI, WebSocket, Request, BackgroundTasks
 from fastapi.responses import HTMLResponse, JSONResponse, Response
@@ -14,20 +16,28 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Add FFmpeg to PATH (User specified location)
-os.environ["PATH"] += os.pathsep + r"C:\ffmpeg\bin"
-
 # Configuration
-PORT = 8001
+PORT = int(os.getenv("PORT", 8001))
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_NUMBER = os.getenv("TWILIO_NUMBER")
-NGROK_URL = os.getenv("NGROK_URL") 
+NGROK_URL = os.getenv("NGROK_URL") # In production, set this to your Render URL (e.g. https://xyz.onrender.com)
 
-# Auto-start Ngrok if not set
-if not NGROK_URL:
+# Cross-Platform Binary Paths
+if platform.system() == "Windows":
+    # User specified location for Windows
+    os.environ["PATH"] += os.pathsep + r"C:\ffmpeg\bin"
+    PIPER_EXE = r"C:\piper\piper.exe"
+    VOICE_MODEL = r"C:\piper\voices\en_US-lessac-medium.onnx"
+else:
+    # Linux / Docker paths
+    PIPER_EXE = "./piper/piper" # Assumes piper is in app root or accessible
+    VOICE_MODEL = "./en_US-lessac-medium.onnx"
+
+# Auto-start Ngrok if not set AND we are on local Windows (optional check)
+if not NGROK_URL and platform.system() == "Windows":
     try:
         from pyngrok import ngrok
         print("NGROK_URL not found. Attempting to start ngrok tunnel...")
@@ -37,14 +47,11 @@ if not NGROK_URL:
     except Exception as e:
         print(f"Could not start ngrok: {e}")
 
-# Piper Config
-PIPER_EXE = r"C:\piper\piper.exe"
-VOICE_MODEL = r"C:\piper\voices\en_US-lessac-medium.onnx"
 OUTPUT_WAV = "response.wav"
 OUTPUT_MULAW = "response.mulaw"
 
 # AI Config
-genai.configure(api_key="AIzaSyDIXFi83mOj5FRSLkYo731VRQdvmieCQNQ")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY", "AIzaSyDIXFi83mOj5FRSLkYo731VRQdvmieCQNQ"))
 llm = genai.GenerativeModel("gemini-2.5-flash")
 
 print("Loading Whisper...")
@@ -499,4 +506,4 @@ def change_to_e164(number):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=PORT)

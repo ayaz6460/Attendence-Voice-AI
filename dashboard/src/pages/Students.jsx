@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout';
 import { Plus, Trash2, Search, User, Phone, Save, Loader2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_URL = "http://localhost:8001";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
 
 const Students = () => {
     const [students, setStudents] = useState([]);

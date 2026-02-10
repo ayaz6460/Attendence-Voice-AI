@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout';
 import { FileText, UserX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_URL = "http://localhost:8001";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
 
 const History = () => {
     const [history, setHistory] = useState([]);
@@ -56,8 +56,8 @@ const History = () => {
                                     </td>
                                     <td className="p-4">
                                         <span className={`px-2 py-1 rounded text-xs font-medium ${record.status === 'ABSENT'
-                                                ? 'text-rose-400 bg-rose-500/10'
-                                                : 'text-emerald-400 bg-emerald-500/10'
+                                            ? 'text-rose-400 bg-rose-500/10'
+                                            : 'text-emerald-400 bg-emerald-500/10'
                                             }`}>
                                             {record.status}
                                         </span>
