@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassFlow | AI Attendance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --background: #0f172a;
+            --surface: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--text-sub);
+            font-size: 1.1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1.5fr 2fr;
+            }
+        }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Student List Styles */
+        .student-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .student-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--danger);
+            transition: .4s;
+            border-radius: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--success);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        input:checked+.slider:after {
+            content: "";
+        }
+
+        /* Button */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(99, 102, 241, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Logs */
+        .log-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            padding: 16px;
+            border-left: 3px solid var(--text-sub);
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            border-radius: 0 8px 8px 0;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .log-item.present {
+            border-left-color: var(--success);
+        }
+
+        .log-item.absent {
+            border-left-color: var(--danger);
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+
+        .log-reason {
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>ClassFlow AI</h1>
+            <p class="subtitle">Smart Attendance & Voice Agent System</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Attendance Section -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Mark Attendance</span>
+                    <span style="font-size: 0.9rem; color: var(--text-sub)" id="date-display"></span>
+                </div>
+
+                <div id="student-list">
+                    <div style="text-align:center; padding: 20px; color: var(--text-sub);">
+                        Loading students...
+                    </div>
+                </div>
+
+                <button class="submit-btn" onclick="submitAttendance()">
+                    📡 Submit & Notify Absentees
+                </button>
+            </div>
+
+            <!-- Live Logs Section -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Live Agent Feed</span>
+                    <div class="status-badge">● Live</div>
+                </div>
+
+                <div class="log-list" id="log-list">
+                    <div style="text-align:center; padding: 20px; color: var(--text-sub);">
+                        Waiting for updates...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set Date
+        document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+        // Port Check
+        if (window.location.port !== "3000") {
+            const warning = document.createElement('div');
+            warning.style.cssText = "position:fixed; top:0; left:0; width:100%; background:#ef4444; color:white; padding:10px; text-align:center; z-index:9999;";
+            warning.innerHTML = "⚠️ You are running on the wrong port! Please go to <a href='http://localhost:3000' style='color:white; font-weight:bold;'>http://localhost:3000</a> to use the app.";
+            document.body.prepend(warning);
+        }
+
+        let students = [];
+
+        async function loadStudents() {
+            try {
+                const res = await fetch('/students');
+                students = await res.json();
+
+                const list = document.getElementById('student-list');
+                list.innerHTML = '';
+
+                students.forEach(s => {
+                    const initials = s.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+                    const div = document.createElement('div');
+                    div.className = 'student-item';
+                    div.innerHTML = `
+                    <div class="student-info">
+                        <div class="avatar">${initials}</div>
+                        <div>
+                            <div style="font-weight: 500">${s.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-sub)">${s.roll}</div>
+                        </div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" class="student-check" value="${s.roll}" checked>
+                        <span class="slider"></span>
+                    </label>
+                `;
+                    list.appendChild(div);
+                });
+            } catch (e) {
+                console.error(e);
+                document.getElementById('student-list').innerHTML = '<div style="color:#ef4444; text-align:center">Error loading students from Supabase</div>';
+            }
+        }
+
+        async function submitAttendance() {
+            // Collect checked items (Present)
+            const checkboxes = document.querySelectorAll('.student-check:checked');
+            const present_students = Array.from(checkboxes).map(cb => cb.value);
+
+            const btn = document.querySelector('.submit-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
+
+            try {
+                await fetch('/submit-attendance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ present_students })
+                });
+                setTimeout(() => {
+                    btn.innerText = "✅ Submitted Successfully";
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                        btn.style.opacity = "1";
+                    }, 2000);
+                }, 500);
+
+                loadLog();
+            } catch (e) {
+                alert("Error submitting attendance");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function loadLog() {
+            try {
+                const res = await fetch('/attendance-log');
+                const data = await res.json();
+
+                // Sort by latest maybe?
+                data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                const list = document.getElementById('log-list');
+
+                if (data.length === 0) {
+                    list.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-sub);">No attendance marked for today yet.</div>`;
+                    return;
+                }
+
+                list.innerHTML = '';
+                data.forEach(log => {
+                    const isPresent = log.status === 'PRESENT';
+                    const div = document.createElement('div');
+                    div.className = `log-item ${isPresent ? 'present' : 'absent'}`;
+
+                    div.innerHTML = `
+                    <div class="log-header">
+                        <span style="font-weight: 600; color: white;">${log.name || log.student_roll}</span>
+                        <span style="color: ${isPresent ? 'var(--success)' : 'var(--danger)'}">${log.status}</span>
+                    </div>
+                    <div class="log-reason">
+                        ${isPresent ? 'Marked Present' : (log.reason || '<span style="opacity:0.6; font-style:italic">Calling agent...</span>')}
+                    </div>
+                `;
+                    list.appendChild(div);
+                });
+            } catch (e) {
+                console.error("Log error", e);
+            }
+        }
+
+        // Init
+        loadStudents();
+        loadLog();
+        // Poll for updates every 3 seconds
+        setInterval(loadLog, 3000);
+
+    </script>
+</body>
+
+</html>

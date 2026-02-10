@@ -1,0 +1,16 @@
+node_modules/
+venv/
+.env
+__pycache__/
+*.pyc
+*.log
+input.mulaw
+input.wav
+response.mulaw
+response.wav
+ffmpeg.exe
+ffmpeg-8.0.1-essentials_build.7z
+server_log*.txt
+error_log.txt
+dashboard/dist/
+.DS_Store
