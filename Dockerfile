@@ -23,6 +23,10 @@ WORKDIR /app
 
 # Copy requirements and install
 COPY requirements.txt .
+
+# Install CPU-only PyTorch (Critical for Free Tier Space)
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Pre-cache Whisper model
