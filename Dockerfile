@@ -24,8 +24,11 @@ WORKDIR /app
 # Copy requirements and install
 COPY requirements.txt .
 
-# Install CPU-only PyTorch AND Whisper (Prevents pulling NVIDIA libs)
-RUN pip install --no-cache-dir torch torchvision torchaudio openai-whisper --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple
+# Install CPU-only PyTorch (Separate layer to save space/cache)
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# Install Whisper (Separate layer)
+RUN pip install --no-cache-dir openai-whisper --extra-index-url https://pypi.org/simple
 
 RUN pip install --no-cache-dir -r requirements.txt
 
