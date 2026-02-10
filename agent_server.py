@@ -140,10 +140,18 @@ async def start_call(request: Request, background_tasks: BackgroundTasks):
     print(f"Initiating call to: {to_number} ({roll})")
 
     try:
+        # Dynamic URL handling: Use NGROK_URL if set, otherwise use the request's base URL
+        # This fixes the issue on EC2 where NGROK_URL might be missing or wrong
+        base_url = NGROK_URL
+        if not base_url:
+            base_url = str(request.base_url).rstrip("/")
+            
+        print(f"Using Callback URL: {base_url}/twiml?roll={roll}")
+            
         call = twilio_client.calls.create(
             to=to_number,
             from_=TWILIO_NUMBER,
-            url=f"{NGROK_URL}/twiml?roll={roll}"
+            url=f"{base_url}/twiml?roll={roll}"
         )
         return {"status": "success", "call_sid": call.sid}
     except Exception as e:
