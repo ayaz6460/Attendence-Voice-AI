@@ -5,12 +5,14 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     wget \
     tar \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Piper TTS (Linux version)
 WORKDIR /tmp
 RUN wget -O piper.tar.gz https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz && \
     tar -xvf piper.tar.gz && \
+    mkdir -p /app && \
     mv piper /app/piper && \
     rm piper.tar.gz
 
