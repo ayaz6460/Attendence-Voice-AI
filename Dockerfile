@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install Piper TTS (Linux version)
 WORKDIR /tmp
-RUN wget -O piper.tar.gz https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_linux_x86_64.tar.gz && \
+RUN wget -O piper.tar.gz https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_amd64.tar.gz && \
     tar -xvf piper.tar.gz && \
     mv piper /app/piper && \
     rm piper.tar.gz
