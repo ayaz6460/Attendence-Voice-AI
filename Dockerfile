@@ -1,7 +1,8 @@
 FROM python:3.10-slim
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install system dependencies (Minimal, avoiding recommended bloat like X11)
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     curl \
     tar \
