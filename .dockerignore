@@ -1,0 +1,15 @@
+.git
+.gitignore
+venv
+__pycache__
+dashboard/node_modules
+dashboard/.next
+dashboard/dist
+*.pyc
+.env
+README.md
+task.md
+deployment_guide.md
+aws_deployment_guide.md
+ssh_troubleshooting.md
+implementation_plan.md
