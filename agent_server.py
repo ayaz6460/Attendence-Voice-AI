@@ -55,7 +55,7 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY", "AIzaSyDIXFi83mOj5FRSLkYo731
 llm = genai.GenerativeModel("gemini-2.5-flash")
 
 print("Loading Whisper...")
-stt_model = whisper.load_model("base")
+stt_model = whisper.load_model("tiny")
 print("Whisper loaded")
 
 from fastapi.middleware.cors import CORSMiddleware
