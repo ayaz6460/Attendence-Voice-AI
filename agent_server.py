@@ -194,7 +194,8 @@ async def twiml(request: Request):
     roll = request.query_params.get("roll", "")
     response = VoiceResponse()
     connect = Connect()
-    stream = connect.stream(url=f"wss://{host}/stream?roll={roll}")
+    # Use ws:// because we are on raw IP without SSL
+    stream = connect.stream(url=f"ws://{host}/stream?roll={roll}")
     # Pass metadata if needed
     response.append(connect)
     return Response(content=str(response), media_type="application/xml")
