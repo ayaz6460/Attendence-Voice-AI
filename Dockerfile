@@ -3,18 +3,16 @@ FROM python:3.10-slim
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     ffmpeg \
-    wget \
+    curl \
     tar \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Piper TTS (Linux version)
 WORKDIR /tmp
-RUN wget -O piper.tar.gz https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz && \
-    tar -xvf piper.tar.gz && \
-    mkdir -p /app && \
-    mv piper /app/piper && \
-    rm piper.tar.gz
+RUN curl -L -o piper.tar.gz https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz
+RUN tar -xvf piper.tar.gz
+RUN mkdir -p /app/piper && cp -r piper/* /app/piper/ && rm -rf piper piper.tar.gz
 
 # Download a Piper voice (En Lessac Medium)
 WORKDIR /app/piper
