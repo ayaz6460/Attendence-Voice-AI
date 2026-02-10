@@ -32,8 +32,8 @@ RUN pip install --no-cache-dir openai-whisper --extra-index-url https://pypi.org
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-cache Whisper model
-RUN python -c "import whisper; whisper.load_model('base')"
+# Pre-cache Whisper model (Disabled to save build space on Free Tier)
+# RUN python -c "import whisper; whisper.load_model('base')"
 
 # Copy application code
 COPY . .
